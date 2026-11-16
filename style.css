@@ -1,0 +1,114 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color:#f4f7fb;
+    color: #222;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1{
+    color: #306998;
+}
+
+p{
+    font-size: 18px;
+    line-height: 1.6;
+}
+.lesson, .editor, .output{
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+code{
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+}
+
+textarea{
+    width: 100%;
+    box-sizing: border-box;
+    font-family: Consolas, monospace;
+    font-size: 16px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button{
+    background-color: #306998;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button:hover{
+    background-color: #205070;
+}
+
+pre{
+    background-color: #0d0606;
+    color:#4ade80;
+    padding: 15px;
+    border-radius: 6px;
+    overflow-x: auto;
+} 
+
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+button:disabled{
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+#feedback {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.correct {
+  color: #1a7f37;
+}
+
+.incorrect {
+  color: #b42318;
+}
+
+.progress {
+  background-color: #dde3ec;
+  border-radius: 20px;
+  height: 14px;
+  overflow: hidden;
+}
+
+#progress-bar {
+  background-color: #1a7f37;
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s;
+}
+
+#progress-text {
+  font-size: 14px;
+  color: #555555;
+  margin: 8px 0 20px;
+}
+
+button.secondary {
+  background-color: #888888;
+  font-size: 14px;
+  padding: 8px 16px;
+}
