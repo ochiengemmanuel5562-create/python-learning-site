@@ -121,6 +121,56 @@ pre {
   overflow-x: auto;
 }
 
+body.dark {
+  background-color: #12161c;
+  color: #e6e6e6;
+}
+
+body.dark h1 {
+  color: #6fb1e6;
+}
+
+body.dark .lesson,
+body.dark .editor,
+body.dark .output,
+body.dark .menu,
+body.dark .author {
+  background-color: #1c222b;
+  box-shadow: none;
+}
+
+body.dark code {
+  background-color: #2a323d;
+}
+
+body.dark textarea,
+body.dark #lesson-select {
+  background-color: #12161c;
+  color: #e6e6e6;
+  border: 1px solid #3a4452;
+}
+
+body.dark #lesson-select option {
+  background-color: #1c222b;
+  color: #e6e6e6;
+}
+
+body.dark .progress {
+  background-color: #2a323d;
+}
+
+body.dark #progress-text {
+  color: #aab4c0;
+}
+
+body.dark .correct {
+  color: #4ade80;
+}
+
+body.dark .incorrect {
+  color: #f87171;
+}
+
 @media (max-width: 500px) {
   body {
     margin: 20px auto;

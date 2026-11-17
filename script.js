@@ -14,6 +14,7 @@ const resetButton = document.getElementById("reset-button");
 const solutionButton = document.getElementById("solution-button");
 // 1. Declare lessonSelect instead of the unused lessonMenu
 const lessonSelect = document.getElementById("lesson-select");
+const themeButton = document.getElementById("theme-button");
 
 const lessons = [
   {
@@ -240,6 +241,42 @@ codeInput.addEventListener("keydown", function (event) {
 
 lessonSelect.addEventListener("change", function () {
   showLesson(Number(lessonSelect.value));
+});
+
+const THEME_KEY = "pythonSiteTheme";
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved) {
+      return saved === "dark";
+    }
+  } catch (error) {
+    console.log("Could not read theme:", error);
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function saveTheme(isDark) {
+  try {
+    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+  } catch (error) {
+    console.log("Could not save theme:", error);
+  }
+}
+
+function applyTheme(isDark) {
+  document.body.classList.toggle("dark", isDark);
+  themeButton.textContent = isDark ? "Light mode" : "Dark mode";
+}
+
+let darkMode = loadTheme();
+applyTheme(darkMode);
+
+themeButton.addEventListener("click", function () {
+  darkMode = !darkMode;
+  applyTheme(darkMode);
+  saveTheme(darkMode);
 });
 
 showLesson(0);
