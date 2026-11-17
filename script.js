@@ -1,3 +1,4 @@
+import { loadProgress, saveProgress, loadTheme, saveTheme } from "./progress.js";
 const runButton = document.getElementById("run-button");
 const codeInput = document.getElementById("code-input");
 const outputBox = document.getElementById("output-box");
@@ -62,26 +63,7 @@ const lessons = [
     hint: "range(1, 6) starts at 1 and stops just before 6.",
     solution: `for i in range(1, 6):\n    print(i)`,
   },
-];
-
-const STORAGE_KEY = "pythonSiteProgress";
-
-function loadProgress() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function saveProgress() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
-  } catch (error) {
-    console.log("Could not save progress:", error);
-  }
-}
+]
 
 let completed = loadProgress();
 let currentLesson = 0;
@@ -153,7 +135,7 @@ function checkAnswer() {
   if (printed.trim() === lesson.expected) {
     if (!completed.includes(currentLesson)) {
       completed.push(currentLesson);
-      saveProgress();
+      saveProgress(completed);
     }
     updateCounter();
     updateProgress();
@@ -179,7 +161,7 @@ nextButton.addEventListener("click", function () {
 resetButton.addEventListener("click", function () {
   if (confirm("Reset all your progress?")) {
     completed = [];
-    saveProgress();
+    saveProgress(completed);
     updateCounter();
     updateProgress();
     renderMenu(); // Clear checkmarks in dropdown
@@ -243,27 +225,7 @@ lessonSelect.addEventListener("change", function () {
   showLesson(Number(lessonSelect.value));
 });
 
-const THEME_KEY = "pythonSiteTheme";
 
-function loadTheme() {
-  try {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved) {
-      return saved === "dark";
-    }
-  } catch (error) {
-    console.log("Could not read theme:", error);
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
-
-function saveTheme(isDark) {
-  try {
-    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-  } catch (error) {
-    console.log("Could not save theme:", error);
-  }
-}
 
 function applyTheme(isDark) {
   document.body.classList.toggle("dark", isDark);

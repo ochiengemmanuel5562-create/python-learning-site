@@ -1,101 +1,202 @@
-body{
-    font-family: Arial, sans-serif;
-    background-color:#f4f7fb;
-    color: #222;
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 0 20px;
+/* ---------- Colours (change these to restyle the whole site) ---------- */
+:root {
+  --primary: #1cb0f6;
+  --primary-dark: #1899d6;
+  --nav: #ce82ff;
+  --nav-dark: #a568cc;
+  --page-bg: #ffffff;
+  --card-bg: #ffffff;
+  --line: #e5e5e5;
+  --text: #3c3c3c;
+  --muted: #777777;
+  --code-bg: #f0f0f0;
+  --correct: #58a700;
+  --incorrect: #ea2b2b;
 }
 
-h1{
-    color: #306998;
+body.dark {
+  --page-bg: #131f24;
+  --card-bg: #202f36;
+  --line: #37464f;
+  --text: #e5e5e5;
+  --muted: #afafaf;
+  --code-bg: #2b3d45;
+  --correct: #58cc02;
+  --incorrect: #ff6b6b;
 }
 
-p{
-    font-size: 18px;
-    line-height: 1.6;
-}
-.lesson, .editor, .output, .menu{
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* ---------- Page ---------- */
+* {
+  box-sizing: border-box;
 }
 
-code{
-    background-color: #f5f5f5;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: Consolas, monospace;
+body {
+  font-family: "Nunito", Arial, sans-serif;
+  font-weight: 600;
+  background-color: var(--page-bg);
+  color: var(--text);
+  max-width: 700px;
+  margin: 24px auto;
+  padding: 0 20px 60px;
 }
 
-textarea{
-    width: 100%;
-    box-sizing: border-box;
-    font-family: Consolas, monospace;
-    font-size: 16px;
-    padding: 10px;
-    margin: 10px 0;
+h1 {
+  color: var(--primary);
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 12px;
 }
 
-button{
-    background-color: #306998;
-    color: #fff;
-    border: none;
-    padding: 10px 24px;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 16px;
+h2, h3 {
+  font-weight: 800;
 }
 
-button:hover{
-    background-color: #205070;
+p {
+  font-size: 18px;
+  line-height: 1.6;
 }
 
-pre{
-    background-color: #0d0606;
-    color:#4ade80;
-    padding: 15px;
-    border-radius: 6px;
-    overflow-x: auto;
-} 
-
-.nav{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
+label {
+  font-weight: 800;
 }
 
-button:disabled{
-    background-color: #aaa;
-    cursor: not-allowed;
+/* ---------- Cards ---------- */
+.lesson, .editor, .output, .menu, .author {
+  background-color: var(--card-bg);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-#feedback {
-  font-weight: bold;
-  margin-top: 15px;
+code {
+  background-color: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: Consolas, "Courier New", monospace;
 }
 
-.correct {
-  color: #1a7f37;
+/* ---------- Inputs ---------- */
+textarea, select {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  color: var(--text);
 }
 
-.incorrect {
-  color: #b42318;
+textarea {
+  font-family: Consolas, "Courier New", monospace;
+  resize: vertical;
 }
 
+select {
+  font-family: inherit;
+  font-weight: 700;
+}
+
+select option {
+  background-color: var(--card-bg);
+  color: var(--text);
+}
+
+textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ---------- Chunky buttons ---------- */
+button {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: white;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 14px;
+  padding: 12px 24px;
+  box-shadow: 0 4px 0 var(--primary-dark);
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--primary-dark);
+}
+
+.nav button {
+  background-color: var(--nav);
+  box-shadow: 0 4px 0 var(--nav-dark);
+}
+
+.nav button:active {
+  box-shadow: 0 0 0 var(--nav-dark);
+}
+
+button.secondary {
+  background-color: var(--card-bg);
+  color: var(--primary);
+  border: 2px solid var(--line);
+  box-shadow: 0 4px 0 var(--line);
+  padding: 10px 20px;
+}
+
+button.secondary:active {
+  box-shadow: 0 0 0 var(--line);
+}
+
+button:disabled {
+  background-color: var(--line);
+  color: #afafaf;
+  box-shadow: none;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
+#solution-button {
+  margin-left: 10px;
+}
+
+#reset-button {
+  margin-top: 10px;
+}
+
+/* ---------- Lesson navigation ---------- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#lesson-counter {
+  font-weight: 800;
+  color: var(--muted);
+}
+
+/* ---------- Progress bar ---------- */
 .progress {
-  background-color: #dde3ec;
-  border-radius: 20px;
-  height: 14px;
+  background-color: var(--line);
+  border-radius: 999px;
+  height: 16px;
   overflow: hidden;
 }
 
 #progress-bar {
-  background-color: #1a7f37;
+  background-color: var(--primary);
+  border-radius: 999px;
   height: 100%;
   width: 0%;
   transition: width 0.4s;
@@ -103,116 +204,59 @@ button:disabled{
 
 #progress-text {
   font-size: 14px;
-  color: #555555;
+  font-weight: 700;
+  color: var(--muted);
   margin: 8px 0 20px;
 }
 
-button.secondary {
-  background-color: #888888;
-  font-size: 14px;
-  padding: 8px 16px;
-}
-
-#solution-button {
-  margin-left: 10px;
-}
-
+/* ---------- Output and feedback ---------- */
 pre {
+  background-color: #131f24;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 16px;
   overflow-x: auto;
 }
 
-body.dark {
-  background-color: #12161c;
-  color: #e6e6e6;
+#feedback {
+  font-weight: 800;
+  margin-top: 15px;
 }
 
-body.dark h1 {
-  color: #6fb1e6;
+.correct {
+  color: var(--correct);
 }
 
-body.dark .lesson,
-body.dark .editor,
-body.dark .output,
-body.dark .menu,
-body.dark .author {
-  background-color: #1c222b;
-  box-shadow: none;
+.incorrect {
+  color: var(--incorrect);
 }
 
-body.dark code {
-  background-color: #2a323d;
+#author-avatar {
+  border-radius: 50%;
 }
 
-body.dark textarea,
-body.dark #lesson-select {
-  background-color: #12161c;
-  color: #e6e6e6;
-  border: 1px solid #3a4452;
-}
-
-body.dark #lesson-select option {
-  background-color: #1c222b;
-  color: #e6e6e6;
-}
-
-body.dark .progress {
-  background-color: #2a323d;
-}
-
-body.dark #progress-text {
-  color: #aab4c0;
-}
-
-body.dark .correct {
-  color: #4ade80;
-}
-
-body.dark .incorrect {
-  color: #f87171;
-}
-
+/* ---------- Phones (keep this at the bottom) ---------- */
 @media (max-width: 500px) {
   body {
-    margin: 20px auto;
+    margin: 16px auto;
   }
 
   h1 {
-    font-size: 24px;
+    font-size: 26px;
   }
 
-  .lesson, .editor, .output {
+  .lesson, .editor, .output, .menu, .author {
     padding: 15px;
   }
 
   #run-button, #solution-button {
     width: 100%;
-    margin: 6px 0 0 0;
+    margin: 8px 0 0 0;
   }
 
   .nav button {
-    padding: 8px 14px;
+    padding: 10px 14px;
     font-size: 14px;
   }
-}
-
-#lesson-menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#lesson-menu li {
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-#lesson-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  font-size: 16px;
-  border: 1px solid #c5ccd6;
-  border-radius: 6px;
-  background-color: white;
 }
