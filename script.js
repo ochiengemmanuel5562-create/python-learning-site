@@ -11,6 +11,9 @@ const nextButton = document.getElementById("next-button");
 const progressBar = document.getElementById("progress-bar");
 const progressText = document.getElementById("progress-text");
 const resetButton = document.getElementById("reset-button");
+const solutionButton = document.getElementById("solution-button");
+// 1. Declare lessonSelect instead of the unused lessonMenu
+const lessonSelect = document.getElementById("lesson-select");
 
 const lessons = [
   {
@@ -20,6 +23,7 @@ const lessons = [
     starter: `print("Hello, world!")`,
     expected: "I love Python",
     hint: "Only change the words inside the quotes. Capital letters matter.",
+    solution: `print("I love Python")`,
   },
   {
     title: "Lesson 2: Variables",
@@ -28,6 +32,7 @@ const lessons = [
     starter: `name = "Sam"\nprint("Hello, " + name)`,
     expected: "Paris",
     hint: "Write city = ... on one line, then print(city) on the next. Don't put quotes around city inside print().",
+    solution: `city = "Paris"\nprint(city)`,
   },
   {
     title: "Lesson 3: Doing math",
@@ -36,6 +41,25 @@ const lessons = [
     starter: `print(2 + 3 * 4)\nprint(10 / 4)`,
     expected: "10080",
     hint: "Multiply 7 days by 24 hours by 60 minutes. Python uses * for multiplication.",
+    solution: `print(7 * 24 * 60)`,
+  },
+  {
+    title: "Lesson 4: Making decisions with if",
+    text: `An <code>if</code> statement runs code only when something is true. <code>else</code> runs when it isn't. The indented lines (4 spaces) belong to the line above them. Use <code>&gt;</code> for "greater than" and <code>==</code> (two equals signs) to check if two things are equal.`,
+    task: 'The temperature is 35. Write an if/else that prints "Hot" if it is above 30, otherwise prints "Cool".',
+    starter: `temperature = 35\n# Write your if/else below this line\n`,
+    expected: "Hot",
+    hint: "Start with: if temperature > 30:  then press Enter, press Tab, and write your print. Don't forget the colon at the end of the if line.",
+    solution: `temperature = 35\nif temperature > 30:\n    print("Hot")\nelse:\n    print("Cool")`,
+  },
+  {
+    title: "Lesson 5: Repeating with loops",
+    text: `A <code>for</code> loop repeats code. <code>range(3)</code> gives the numbers 0, 1, 2. <code>range(1, 6)</code> starts at 1 and stops <em>before</em> 6.`,
+    task: "Change the loop so it prints the numbers 1 to 5, each on its own line.",
+    starter: `for i in range(3):\n    print(i)`,
+    expected: "1\n2\n3\n4\n5",
+    hint: "range(1, 6) starts at 1 and stops just before 6.",
+    solution: `for i in range(1, 6):\n    print(i)`,
   },
 ];
 
@@ -78,6 +102,23 @@ function updateCounter() {
   lessonCounter.textContent = text;
 }
 
+// 2. Keep only this single renderMenu() that populates the <select> dropdown
+function renderMenu() {
+  lessonSelect.innerHTML = "";
+
+  lessons.forEach(function (lesson, index) {
+    const option = document.createElement("option");
+    const mark = completed.includes(index) ? "✅ " : "";
+
+    option.value = index;
+    option.textContent = mark + lesson.title;
+
+    lessonSelect.appendChild(option);
+  });
+
+  lessonSelect.value = currentLesson;
+}
+
 function showFeedback(message, isCorrect) {
   feedback.textContent = message;
   feedback.className = isCorrect ? "correct" : "incorrect";
@@ -95,11 +136,14 @@ function showLesson(index) {
   feedback.textContent = "";
   feedback.className = "";
 
+  // 3. Disable Previous on first lesson and Next on last lesson
+  prevButton.disabled = currentLesson === 0;
+  nextButton.disabled = currentLesson === lessons.length - 1;
+
   updateCounter();
   updateProgress();
-
-  prevButton.disabled = index === 0;
-  nextButton.disabled = index === lessons.length - 1;
+  // 4. Populate and sync the dropdown whenever a lesson is shown
+  renderMenu();
 }
 
 function checkAnswer() {
@@ -112,18 +156,23 @@ function checkAnswer() {
     }
     updateCounter();
     updateProgress();
-    showFeedback(" Correct! Well done. Click Next to continue.", true);
+    renderMenu(); // Update checkmark in dropdown
+    showFeedback("Correct! Well done. Click Next to continue.", true);
   } else {
     showFeedback("Not quite yet. Hint: " + lesson.hint, false);
   }
 }
 
 prevButton.addEventListener("click", function () {
-  showLesson(currentLesson - 1);
+  if (currentLesson > 0) {
+    showLesson(currentLesson - 1);
+  }
 });
 
 nextButton.addEventListener("click", function () {
-  showLesson(currentLesson + 1);
+  if (currentLesson < lessons.length - 1) {
+    showLesson(currentLesson + 1);
+  }
 });
 
 resetButton.addEventListener("click", function () {
@@ -132,6 +181,9 @@ resetButton.addEventListener("click", function () {
     saveProgress();
     updateCounter();
     updateProgress();
+    renderMenu(); // Clear checkmarks in dropdown
+
+    prevButton.disabled = currentLesson === 0;
   }
 });
 
@@ -168,6 +220,26 @@ runButton.addEventListener("click", async function () {
     outputBox.textContent = error.message;
     showFeedback("There's an error in your code. Read the message above for clues.", false);
   }
+});
+
+solutionButton.addEventListener("click", function () {
+  if (confirm("Have you tried the hint first? Click OK to see the solution.")) {
+    codeInput.value = lessons[currentLesson].solution;
+    outputBox.textContent = "Solution loaded. Click Run to see the result.";
+    feedback.textContent = "";
+    feedback.className = "";
+  }
+});
+
+codeInput.addEventListener("keydown", function (event) {
+  if (event.key === "Tab") {
+    event.preventDefault();
+    codeInput.setRangeText("    ", codeInput.selectionStart, codeInput.selectionEnd, "end");
+  }
+});
+
+lessonSelect.addEventListener("change", function () {
+  showLesson(Number(lessonSelect.value));
 });
 
 showLesson(0);

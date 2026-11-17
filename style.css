@@ -15,7 +15,7 @@ p{
     font-size: 18px;
     line-height: 1.6;
 }
-.lesson, .editor, .output{
+.lesson, .editor, .output, .menu{
     background-color: #fff;
     border: 1px solid #ddd;
     padding: 20px;
@@ -111,4 +111,58 @@ button.secondary {
   background-color: #888888;
   font-size: 14px;
   padding: 8px 16px;
+}
+
+#solution-button {
+  margin-left: 10px;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+@media (max-width: 500px) {
+  body {
+    margin: 20px auto;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .lesson, .editor, .output {
+    padding: 15px;
+  }
+
+  #run-button, #solution-button {
+    width: 100%;
+    margin: 6px 0 0 0;
+  }
+
+  .nav button {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
+
+#lesson-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#lesson-menu li {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#lesson-select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 16px;
+  border: 1px solid #c5ccd6;
+  border-radius: 6px;
+  background-color: white;
 }

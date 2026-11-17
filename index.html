@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>Learn Python</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
@@ -14,11 +16,14 @@
         </section>
 
         <div class="nav">
-            <button id="reset-button" class="secondary">Reset progress</button>
             <button id="prev-button">Previous</button>
-            <span id="lesson-counter">Lesson 1 of 3</span>
+            <span id="lesson-counter">Lesson 1 of 5</span>
             <button id="next-button">Next</button>
         </div>
+        <section class="menu">
+            <label for="lesson-select">Jump to lesson:</label>
+            <select id="lesson-select"></select>
+        </section>
 
         <div class="progress">
             <div id="progress-bar"></div>
@@ -30,6 +35,7 @@
          <label for="code-input">Write your Python code here</label>
          <textarea id="code-input" rows="6">print("Hello, World!")</textarea>
          <button id="run-button">Run</button>
+         <button id="solution-button" class="secondary">Show Solution</button>
         </section>
 
         <section class="output">
@@ -37,6 +43,14 @@
             <pre id="output-box">Your result will appear here</pre>
             <p id="feedback"></p>
         </section>
+
+        <section class="author">
+            <h3>About the builder</h3>
+            <img id="author-avatar" alt="GitHub profile picture" width="64" height="64" hidden>
+            <p id="author-info">Loading...</p>
+        </section>
+
+        <button id="reset-button" class="secondary">Reset progress</button>
         
         <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
         <script src="script.js"></script>
