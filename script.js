@@ -1,4 +1,5 @@
-import { loadProgress, saveProgress, loadTheme, saveTheme } from "./progress.js";
+import { loadProgress, saveProgress, loadTheme, saveTheme } from "./storage.js";
+
 const runButton = document.getElementById("run-button");
 const codeInput = document.getElementById("code-input");
 const outputBox = document.getElementById("output-box");
@@ -13,7 +14,6 @@ const progressBar = document.getElementById("progress-bar");
 const progressText = document.getElementById("progress-text");
 const resetButton = document.getElementById("reset-button");
 const solutionButton = document.getElementById("solution-button");
-// 1. Declare lessonSelect instead of the unused lessonMenu
 const lessonSelect = document.getElementById("lesson-select");
 const themeButton = document.getElementById("theme-button");
 
@@ -63,9 +63,10 @@ const lessons = [
     hint: "range(1, 6) starts at 1 and stops just before 6.",
     solution: `for i in range(1, 6):\n    print(i)`,
   },
-]
+];
 
-let completed = loadProgress();
+const saved = loadProgress();
+let completed = Array.isArray(saved) ? saved : [];
 let currentLesson = 0;
 let pyodide = null;
 let printed = "";
@@ -85,7 +86,6 @@ function updateCounter() {
   lessonCounter.textContent = text;
 }
 
-// 2. Keep only this single renderMenu() that populates the <select> dropdown
 function renderMenu() {
   lessonSelect.innerHTML = "";
 
@@ -115,17 +115,18 @@ function showLesson(index) {
   lessonText.innerHTML = lesson.text;
   lessonTask.textContent = lesson.task;
   codeInput.value = lesson.starter;
-  outputBox.textContent = "Click Run to see the result.";
+  outputBox.textContent =
+    pyodide === null
+      ? "Loading Python... please wait."
+      : "Click Run to see the result.";
   feedback.textContent = "";
   feedback.className = "";
 
-  // 3. Disable Previous on first lesson and Next on last lesson
   prevButton.disabled = currentLesson === 0;
   nextButton.disabled = currentLesson === lessons.length - 1;
 
   updateCounter();
   updateProgress();
-  // 4. Populate and sync the dropdown whenever a lesson is shown
   renderMenu();
 }
 
@@ -139,7 +140,7 @@ function checkAnswer() {
     }
     updateCounter();
     updateProgress();
-    renderMenu(); // Update checkmark in dropdown
+    renderMenu();
     showFeedback("Correct! Well done. Click Next to continue.", true);
   } else {
     showFeedback("Not quite yet. Hint: " + lesson.hint, false);
@@ -164,9 +165,8 @@ resetButton.addEventListener("click", function () {
     saveProgress(completed);
     updateCounter();
     updateProgress();
-    renderMenu(); // Clear checkmarks in dropdown
-
-    prevButton.disabled = currentLesson === 0;
+    renderMenu();
+    showLesson(0);
   }
 });
 
@@ -174,15 +174,19 @@ async function setupPython() {
   runButton.disabled = true;
   outputBox.textContent = "Loading Python... please wait.";
 
-  pyodide = await loadPyodide();
-  pyodide.setStdout({
-    batched: function (text) {
-      printed += text + "\n";
-    },
-  });
+  try {
+    pyodide = await loadPyodide();
+    pyodide.setStdout({
+      batched: function (text) {
+        printed += text + "\n";
+      },
+    });
 
-  outputBox.textContent = "Python is ready! Click Run.";
-  runButton.disabled = false;
+    outputBox.textContent = "Python is ready! Click Run.";
+    runButton.disabled = false;
+  } catch (error) {
+    outputBox.textContent = "Failed to load Python: " + error.message;
+  }
 }
 
 runButton.addEventListener("click", async function () {
@@ -225,14 +229,12 @@ lessonSelect.addEventListener("change", function () {
   showLesson(Number(lessonSelect.value));
 });
 
-
-
 function applyTheme(isDark) {
   document.body.classList.toggle("dark", isDark);
   themeButton.textContent = isDark ? "Light mode" : "Dark mode";
 }
 
-let darkMode = loadTheme();
+let darkMode = Boolean(loadTheme());
 applyTheme(darkMode);
 
 themeButton.addEventListener("click", function () {

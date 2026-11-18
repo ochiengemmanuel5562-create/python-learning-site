@@ -236,6 +236,11 @@ pre {
   border-radius: 50%;
 }
 
+a {
+  color: var(--primary);
+  font-weight: 800;
+}
+
 /* ---------- Phones (keep this at the bottom) ---------- */
 @media (max-width: 500px) {
   body {
