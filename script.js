@@ -19,7 +19,8 @@ const themeButton = document.getElementById("theme-button");
 
 const lessons = [
   {
-    title: "Lesson 1: Your first Python program",
+    module: 1,
+    title: "Your first Python program",
     text: `The <code>print()</code> function shows text on the screen. Put the text inside quotes.`,
     task: "Change the message so Python prints exactly: I love Python",
     starter: `print("Hello, world!")`,
@@ -28,7 +29,8 @@ const lessons = [
     solution: `print("I love Python")`,
   },
   {
-    title: "Lesson 2: Variables",
+    module: 1,
+    title: "Variables",
     text: `A variable stores a value under a name, like <code>age = 20</code>. You can use the name later.`,
     task: 'Create a variable called city that holds "Paris", then print it.',
     starter: `name = "Sam"\nprint("Hello, " + name)`,
@@ -37,7 +39,8 @@ const lessons = [
     solution: `city = "Paris"\nprint(city)`,
   },
   {
-    title: "Lesson 3: Doing math",
+    module: 1,
+    title: "Doing math",
     text: `Python can calculate with <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code>.`,
     task: "Print the number of minutes in a week.",
     starter: `print(2 + 3 * 4)\nprint(10 / 4)`,
@@ -46,7 +49,8 @@ const lessons = [
     solution: `print(7 * 24 * 60)`,
   },
   {
-    title: "Lesson 4: Making decisions with if",
+    module: 2,
+    title: "Making decisions with if",
     text: `An <code>if</code> statement runs code only when something is true. <code>else</code> runs when it isn't. The indented lines (4 spaces) belong to the line above them. Use <code>&gt;</code> for "greater than" and <code>==</code> (two equals signs) to check if two things are equal.`,
     task: 'The temperature is 35. Write an if/else that prints "Hot" if it is above 30, otherwise prints "Cool".',
     starter: `temperature = 35\n# Write your if/else below this line\n`,
@@ -55,7 +59,8 @@ const lessons = [
     solution: `temperature = 35\nif temperature > 30:\n    print("Hot")\nelse:\n    print("Cool")`,
   },
   {
-    title: "Lesson 5: Repeating with loops",
+    module: 3,
+    title: "Repeating with loops",
     text: `A <code>for</code> loop repeats code. <code>range(3)</code> gives the numbers 0, 1, 2. <code>range(1, 6)</code> starts at 1 and stops <em>before</em> 6.`,
     task: "Change the loop so it prints the numbers 1 to 5, each on its own line.",
     starter: `for i in range(3):\n    print(i)`,
@@ -64,6 +69,15 @@ const lessons = [
     solution: `for i in range(1, 6):\n    print(i)`,
   },
 ];
+
+const modules = [
+  { id: 1, name: "Hello, Python" },
+  { id: 2, name: "Making decisions" },
+  { id: 3, name: "Repeating with loops" },
+  { id: 4, name: "Functions" },
+  { id: 5, name: "Lists & Dictionaries" },
+  { id: 6, name: "Project: Build a guessing game" },
+]
 
 const saved = loadProgress();
 let completed = Array.isArray(saved) ? saved : [];
@@ -89,19 +103,35 @@ function updateCounter() {
 function renderMenu() {
   lessonSelect.innerHTML = "";
 
-  lessons.forEach(function (lesson, index) {
-    const option = document.createElement("option");
-    const mark = completed.includes(index) ? "✅ " : "";
+  modules.forEach(function (module) {
+    const group = document.createElement("optgroup");
+    group.label = "Module " + module.id + ": " + module.name;
 
-    option.value = index;
-    option.textContent = mark + lesson.title;
+    lessons.forEach(function (lesson, index) {
+      if (lesson.module !== module.id) {
+        return;
+      }
 
-    lessonSelect.appendChild(option);
+      const option = document.createElement("option");
+      const mark = completed.includes(index) ? "✅ " : "";
+
+      option.value = index;
+      option.textContent = mark + lesson.title;
+      group.appendChild(option);
+    });
+
+    if (group.children.length === 0) {
+      const soon = document.createElement("option");
+      soon.textContent = "Coming soon";
+      soon.disabled = true;
+      group.appendChild(soon);
+    }
+
+    lessonSelect.appendChild(group);
   });
 
   lessonSelect.value = currentLesson;
 }
-
 function showFeedback(message, isCorrect) {
   feedback.textContent = message;
   feedback.className = isCorrect ? "correct" : "incorrect";
