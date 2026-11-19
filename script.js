@@ -394,6 +394,47 @@ function showLesson(index) {
   renderMenu();
 }
 
+async function runTests(lesson, namespace) {
+  const results = [];
+
+  for (const test of lesson.tests) {
+    let passed = false;
+    let detail = "";
+
+    try {
+      passed = await pyodide.runPythonAsync(
+        "(" + test.call + ") == (" + test.expect + ")",
+        { globals: namespace }
+      );
+
+      if (!passed) {
+        const actual = await pyodide.runPythonAsync(
+          "repr(" + test.call + ")",
+          { globals: namespace }
+        );
+        detail = "got " + actual + ", expected " + test.expect;
+      }
+    } catch (error) {
+      const lines = error.message.trim().split("\n");
+      detail = lines[lines.length - 1];
+    }
+
+    results.push({ call: test.call, passed: passed, detail: detail });
+  }
+
+  return results;
+}
+
+function formatResults(results) {
+  return results
+    .map(function (result) {
+      return result.passed
+        ? "✅ " + result.call
+        : "❌ " + result.call + " → " + result.detail;
+    })
+    .join("\n");
+}
+
 function checkAnswer() {
   const lesson = lessons[currentLesson];
 
