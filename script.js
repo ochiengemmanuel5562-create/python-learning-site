@@ -19,6 +19,7 @@ const themeButton = document.getElementById("theme-button");
 
 const lessons = [
   {
+    id: "print",
     module: 1,
     title: "Your first Python program",
     text: `The <code>print()</code> function shows text on the screen. Put the text inside quotes.`,
@@ -29,6 +30,7 @@ const lessons = [
     solution: `print("I love Python")`,
   },
   {
+    id: "variables",
     module: 1,
     title: "Variables",
     text: `A variable stores a value under a name, like <code>age = 20</code>. You can use the name later.`,
@@ -39,6 +41,7 @@ const lessons = [
     solution: `city = "Paris"\nprint(city)`,
   },
   {
+    id: "math",
     module: 1,
     title: "Doing math",
     text: `Python can calculate with <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code>.`,
@@ -49,6 +52,7 @@ const lessons = [
     solution: `print(7 * 24 * 60)`,
   },
   {
+    id: "if-else",
     module: 2,
     title: "Making decisions with if",
     text: `An <code>if</code> statement runs code only when something is true. <code>else</code> runs when it isn't. The indented lines (4 spaces) belong to the line above them. Use <code>&gt;</code> for "greater than" and <code>==</code> (two equals signs) to check if two things are equal.`,
@@ -59,6 +63,18 @@ const lessons = [
     solution: `temperature = 35\nif temperature > 30:\n    print("Hot")\nelse:\n    print("Cool")`,
   },
   {
+    id: "elif",
+    module: 2,
+    title: "Choosing between many options with elif",
+    text: `Use <code>elif</code> (short for "else if") to check more than two possibilities. Python checks each condition from the top and runs the first one that is true.`,
+    task: 'The score is 72. Print "A" if it is 90 or more, "B" if it is 70 or more, otherwise print "C".',
+    starter: `score = 72\n# Write your if / elif / else below this line\n`,
+    expected: "B",
+    hint: "Check the highest grade first: if score >= 90, then elif score >= 70, then else. Every one of those lines needs a colon at the end.",
+    solution: `score = 72\nif score >= 90:\n    print("A")\nelif score >= 70:\n    print("B")\nelse:\n    print("C")`,
+  },
+  {
+    id: "for-loops",
     module: 3,
     title: "Repeating with loops",
     text: `A <code>for</code> loop repeats code. <code>range(3)</code> gives the numbers 0, 1, 2. <code>range(1, 6)</code> starts at 1 and stops <em>before</em> 6.`,
@@ -77,10 +93,33 @@ const modules = [
   { id: 4, name: "Functions" },
   { id: 5, name: "Lists & Dictionaries" },
   { id: 6, name: "Project: Build a guessing game" },
-]
+];
 
-const saved = loadProgress();
-let completed = Array.isArray(saved) ? saved : [];
+// Old saved progress used positions in the ORIGINAL five-lesson order.
+// This list never changes, so old ticks always land on the right lessons.
+const LEGACY_ORDER = ["print", "variables", "math", "if-else", "for-loops"];
+
+function migrateProgress(savedList) {
+  if (!Array.isArray(savedList)) {
+    return [];
+  }
+
+  const ids = savedList.map(function (item) {
+    if (typeof item === "number") {
+      return LEGACY_ORDER[item];
+    }
+    return item;
+  });
+
+  return ids.filter(function (id) {
+    return lessons.some(function (lesson) {
+      return lesson.id === id;
+    });
+  });
+}
+
+let completed = migrateProgress(loadProgress());
+saveProgress(completed);
 let currentLesson = 0;
 let pyodide = null;
 let printed = "";
@@ -93,8 +132,15 @@ function updateProgress() {
 }
 
 function updateCounter() {
-  let text = "Lesson " + (currentLesson + 1) + " of " + lessons.length;
-  if (completed.includes(currentLesson)) {
+  const lesson = lessons[currentLesson];
+  const moduleLessons = lessons.filter(function (item) {
+    return item.module === lesson.module;
+  });
+  const position = moduleLessons.indexOf(lesson) + 1;
+
+  let text =
+    "Module " + lesson.module + " · Lesson " + position + " of " + moduleLessons.length;
+  if (completed.includes(lesson.id)) {
     text += " ✅";
   }
   lessonCounter.textContent = text;
@@ -113,7 +159,7 @@ function renderMenu() {
       }
 
       const option = document.createElement("option");
-      const mark = completed.includes(index) ? "✅ " : "";
+      const mark = completed.includes(lesson.id) ? "✅ " : "";
 
       option.value = index;
       option.textContent = mark + lesson.title;
@@ -132,6 +178,7 @@ function renderMenu() {
 
   lessonSelect.value = currentLesson;
 }
+
 function showFeedback(message, isCorrect) {
   feedback.textContent = message;
   feedback.className = isCorrect ? "correct" : "incorrect";
@@ -164,8 +211,8 @@ function checkAnswer() {
   const lesson = lessons[currentLesson];
 
   if (printed.trim() === lesson.expected) {
-    if (!completed.includes(currentLesson)) {
-      completed.push(currentLesson);
+    if (!completed.includes(lesson.id)) {
+      completed.push(lesson.id);
       saveProgress(completed);
     }
     updateCounter();
