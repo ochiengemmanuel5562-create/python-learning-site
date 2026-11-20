@@ -2,8 +2,8 @@
 
 An interactive website where beginners learn Python in the browser. Read a short lesson, write code, click Run, and get instant feedback. The course runs from `print()` to building a number-guessing game.
 
-**Live demo:** https://ochiengemmanuel5562-create.github.io/python-learning-site/
-
+**Home page:** https://python-pathway-pixel.lovable.app
+**Lessons:** https://ochiengemmanuel5562-create.github.io/python-learning-site/learn.html
 <!-- Landing page: add your Lovable link here if you want to show it -->
 
 ## The course
