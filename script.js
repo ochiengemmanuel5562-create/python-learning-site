@@ -327,6 +327,53 @@ const lessons = [
     hint: "Start with results = []. In a for loop over guesses: if the text is not valid, append \"invalid\". Otherwise call check_guess with int(text), append the result, and break if it equals \"correct\". Return results at the end.",
     solution: `def check_guess(secret, guess):\n    if guess < secret:\n        return "too low"\n    elif guess > secret:\n        return "too high"\n    else:\n        return "correct"\n\ndef is_valid_guess(text):\n    if not text.isdigit():\n        return False\n    number = int(text)\n    return number >= 1 and number <= 100\n\ndef play_round(secret, guesses):\n    results = []\n    for text in guesses:\n        if not is_valid_guess(text):\n            results.append("invalid")\n        else:\n            result = check_guess(secret, int(text))\n            results.append(result)\n            if result == "correct":\n                break\n    return results`,
   },
+    {
+    id: "project-report",
+    module: 6,
+    title: "Project step 5: the game report",
+    text: `After a round, the game prints a report. <code>make_report(secret, guesses)</code> should <strong>return a list of text lines</strong>. First comes one line per result, like <code>Guess 1: too low</code>, with the guess number starting at 1. The last line depends on how the round ended. If the final result is <code>"correct"</code>, the last line is <code>You won! Attempts: 4, Score: 70</code>. Otherwise it is <code>Out of guesses. The number was 7.</code> Every result counts as an attempt, even an invalid one. Be careful: a round can have no results at all, and <code>results[-1]</code> crashes on an empty list, so check <code>len(results) &gt; 0</code> first. Join text and numbers with <code>+</code>, and turn numbers into text with <code>str()</code>.`,
+    task: "Write make_report(secret, guesses). The helper functions, including play_round, are already in the starter code.",
+    starter: `def check_guess(secret, guess):\n    if guess < secret:\n        return "too low"\n    elif guess > secret:\n        return "too high"\n    else:\n        return "correct"\n\ndef is_valid_guess(text):\n    if not text.isdigit():\n        return False\n    number = int(text)\n    return number >= 1 and number <= 100\n\ndef calculate_score(attempts):\n    return max(10, 100 - 10 * (attempts - 1))\n\ndef play_round(secret, guesses):\n    results = []\n    for text in guesses:\n        if not is_valid_guess(text):\n            results.append("invalid")\n        else:\n            result = check_guess(secret, int(text))\n            results.append(result)\n            if result == "correct":\n                break\n    return results\n\ndef make_report(secret, guesses):\n    # Return a list of report lines\n    pass`,
+    tests: [
+      {
+        call: 'make_report(7, ["3", "abc", "9", "7", "8"])',
+        expect: '["Guess 1: too low", "Guess 2: invalid", "Guess 3: too high", "Guess 4: correct", "You won! Attempts: 4, Score: 70"]',
+      },
+      {
+        call: 'make_report(5, ["5"])',
+        expect: '["Guess 1: correct", "You won! Attempts: 1, Score: 100"]',
+      },
+      {
+        call: 'make_report(50, ["49", "51", "50"])',
+        expect: '["Guess 1: too low", "Guess 2: too high", "Guess 3: correct", "You won! Attempts: 3, Score: 80"]',
+      },
+      {
+        call: 'make_report(5, ["1", "2"])',
+        expect: '["Guess 1: too low", "Guess 2: too low", "Out of guesses. The number was 5."]',
+      },
+      {
+        call: 'make_report(20, ["x"])',
+        expect: '["Guess 1: invalid", "Out of guesses. The number was 20."]',
+      },
+      {
+        call: "make_report(9, [])",
+        expect: '["Out of guesses. The number was 9."]',
+      },
+    ],
+    hint: 'Start with results = play_round(secret, guesses) and an empty list called lines. Loop through results with a counter that starts at 1, appending "Guess " + str(number) + ": " + result. Finish with if len(results) > 0 and results[-1] == "correct": (the win line) else: (the out-of-guesses line). Return lines.',
+    solution: `def check_guess(secret, guess):\n    if guess < secret:\n        return "too low"\n    elif guess > secret:\n        return "too high"\n    else:\n        return "correct"\n\ndef is_valid_guess(text):\n    if not text.isdigit():\n        return False\n    number = int(text)\n    return number >= 1 and number <= 100\n\ndef calculate_score(attempts):\n    return max(10, 100 - 10 * (attempts - 1))\n\ndef play_round(secret, guesses):\n    results = []\n    for text in guesses:\n        if not is_valid_guess(text):\n            results.append("invalid")\n        else:\n            result = check_guess(secret, int(text))\n            results.append(result)\n            if result == "correct":\n                break\n    return results\n\ndef make_report(secret, guesses):\n    results = play_round(secret, guesses)\n    lines = []\n    number = 1\n    for result in results:\n        lines.append("Guess " + str(number) + ": " + result)\n        number = number + 1\n    if len(results) > 0 and results[-1] == "correct":\n        attempts = len(results)\n        lines.append("You won! Attempts: " + str(attempts) + ", Score: " + str(calculate_score(attempts)))\n    else:\n        lines.append("Out of guesses. The number was " + str(secret) + ".")\n    return lines`,
+  },
+  {
+    id: "project-final-game",
+    module: 6,
+    title: "Project step 6: play the real game",
+    text: `Time to build the real game. <code>import random</code> gives you <code>random.randint(1, 100)</code>, which picks a different secret number every time. The game asks for each guess with <code>input()</code>, and on this website each <code>input()</code> opens a pop-up box for you to type in. Your helper functions are in the starter code. Finish the loop inside <code>play_game()</code>. You get 10 attempts. Win once to complete this step. Your win message must contain the word <code>Score:</code>. If you press Cancel in a pop-up, Python stops with an EOFError, which is normal.`,
+    task: "Fill in the loop so the game checks each guess, prints the result, and ends with a win message. Then run it and play until you win.",
+    starter: `import random\n\ndef check_guess(secret, guess):\n    if guess < secret:\n        return "too low"\n    elif guess > secret:\n        return "too high"\n    else:\n        return "correct"\n\ndef is_valid_guess(text):\n    if not text.isdigit():\n        return False\n    number = int(text)\n    return number >= 1 and number <= 100\n\ndef calculate_score(attempts):\n    return max(10, 100 - 10 * (attempts - 1))\n\ndef play_game():\n    secret = random.randint(1, 100)\n    attempts = 0\n    print("I am thinking of a number from 1 to 100. You have 10 attempts.")\n\n    while attempts < 10:\n        text = input()\n        attempts = attempts + 1\n\n        # 1. If the guess is not valid, print "Invalid guess."\n        # 2. Otherwise, get the result from check_guess and print it\n        # 3. If the result is "correct", print "You won! Attempts: N, Score: S" and return\n\n    print("Out of attempts. The number was " + str(secret) + ".")\n\nplay_game()`,
+    completeWhenOutputIncludes: "Score:",
+    hint: 'Write the loop body first, then run the game. Inside the loop: if not is_valid_guess(text): print("Invalid guess."). Else: result = check_guess(secret, int(text)), print(result), and if result == "correct", print the win line using str(attempts) and str(calculate_score(attempts)), then return.',
+    solution: `import random\n\ndef check_guess(secret, guess):\n    if guess < secret:\n        return "too low"\n    elif guess > secret:\n        return "too high"\n    else:\n        return "correct"\n\ndef is_valid_guess(text):\n    if not text.isdigit():\n        return False\n    number = int(text)\n    return number >= 1 and number <= 100\n\ndef calculate_score(attempts):\n    return max(10, 100 - 10 * (attempts - 1))\n\ndef play_game():\n    secret = random.randint(1, 100)\n    attempts = 0\n    print("I am thinking of a number from 1 to 100. You have 10 attempts.")\n\n    while attempts < 10:\n        text = input()\n        attempts = attempts + 1\n\n        if not is_valid_guess(text):\n            print("Invalid guess.")\n        else:\n            result = check_guess(secret, int(text))\n            print(result)\n            if result == "correct":\n                print("You won! Attempts: " + str(attempts) + ", Score: " + str(calculate_score(attempts)))\n                return\n\n    print("Out of attempts. The number was " + str(secret) + ".")\n\nplay_game()`,
+  },
 ];
 
 const modules = [
@@ -491,10 +538,25 @@ function formatResults(results) {
     .join("\n");
 }
 
-function checkAnswer() {
+async function checkAnswer(namespace) {
   const lesson = lessons[currentLesson];
+  const runOutput = printed;
+  let passed = false;
 
-  if (printed.trim() === lesson.expected) {
+  if (lesson.tests) {
+    const results = await runTests(lesson, namespace);
+    passed = results.every(function (result) {
+      return result.passed;
+    });
+    outputBox.textContent =
+      (runOutput.trim() ? runOutput + "\n" : "") + formatResults(results);
+  } else if (lesson.completeWhenOutputIncludes) {
+    passed = printed.includes(lesson.completeWhenOutputIncludes);
+  } else {
+    passed = printed.trim() === lesson.expected;
+  }
+
+  if (passed) {
     if (!completed.includes(lesson.id)) {
       completed.push(lesson.id);
       saveProgress(completed);
@@ -537,9 +599,18 @@ async function setupPython() {
 
   try {
     pyodide = await loadPyodide();
+
     pyodide.setStdout({
       batched: function (text) {
         printed += text + "\n";
+      },
+    });
+
+    pyodide.setStdin({
+      stdin: function () {
+        const lines = printed.trim().split("\n");
+        const lastLine = lines[lines.length - 1];
+        return window.prompt(lastLine + "\n\nType your answer and press OK:");
       },
     });
 
